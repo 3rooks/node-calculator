@@ -1,3 +1,6 @@
-const bootstrap = async () => {};
+import { promptQuestion } from '#lib/promptQuestion.js';
 
-bootstrap();
+(async () => {
+    const userAnswer = await promptQuestion('intruduce tu operacion: ');
+    console.log(userAnswer);
+})();
