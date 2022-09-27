@@ -1,34 +1,20 @@
 import { OPERATIONS } from '#constants/operations.js';
-import { BINARY_OPERATORS } from '#constants/operators.js';
 import { InvalidInputError } from '#errors/invalidInputError.js';
-import { getBinaryOperatings, getSingleOperating } from '#lib/getOperatings.js';
-import { getOperator } from '#lib/getOperator.js';
+import { extractByRegex } from '#lib/extractByRegex.js';
 import { promptQuestion } from '#lib/promptQuestion.js';
 
 export const bootstrap = async () => {
     try {
         const userAnswer = await promptQuestion('intruduce tu operacion: ');
 
-        const standarizeInput = userAnswer.trim();
+        const standarizeInput = userAnswer.trim().replaceAll(',', '.');
 
         if (!standarizeInput) throw new InvalidInputError();
 
-        if (standarizeInput === 'exit') {
-            return true;
-        }
+        if (standarizeInput === 'exit') return true;
 
-        const operator = getOperator(standarizeInput);
-
-        if (!operator) throw new InvalidInputError();
-
-        const splittedInput = standarizeInput.split(operator);
-
-        let firstOperating, secondOperating;
-
-        if (BINARY_OPERATORS.includes(operator))
-            [firstOperating, secondOperating] =
-                getBinaryOperatings(splittedInput);
-        else [firstOperating] = getSingleOperating(splittedInput);
+        const [firstOperating, operator, secondOperating] =
+            extractByRegex(standarizeInput);
 
         const result = OPERATIONS[operator](firstOperating, secondOperating);
 
